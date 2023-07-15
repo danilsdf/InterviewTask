@@ -21,7 +21,27 @@ namespace SlotMachine.Controllers
             _players = database.GetCollection<Player>("players");
         }
 
-        [HttpPost]
+        [HttpPost("create")]
+        public async Task<ActionResult> CreatePlayer(PlayerModel model)
+        {
+            if (model.Balance <= 0 || string.IsNullOrWhiteSpace(model.UserName))
+            {
+                return BadRequest("Invalid input");
+            }
+
+            var player = _players.Find(p => p.UserName == model.UserName).FirstOrDefault();
+            if (player != null)
+            {
+                return NotFound($"Player with {model.UserName} already exists");
+            }
+
+            player = new Player(model.Balance, model.UserName);
+            await _players.InsertOneAsync(player);
+
+            return Ok();
+        }
+
+        [HttpPost("spin")]
         public async Task<ActionResult<SpinResult>> Spin(SpinModel model)
         {
             var player = _players.Find(p => p.UserName == model.UserName).FirstOrDefault();

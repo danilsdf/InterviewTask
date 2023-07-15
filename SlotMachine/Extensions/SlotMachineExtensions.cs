@@ -1,5 +1,4 @@
-﻿using System;
-using SlotMachine.Entities;
+﻿using SlotMachine.Entities;
 
 namespace SlotMachine.Extensions;
 

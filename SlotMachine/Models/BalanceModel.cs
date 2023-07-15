@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-
-namespace SlotMachine.Models;
+﻿namespace SlotMachine.Models;
 
 // The request will contain the amount to be added to the player balance
 public class BalanceModel

@@ -4,9 +4,12 @@ using SlotMachine.Entities;
 using SlotMachine.Extensions;
 using SlotMachine.Models;
 using SlotMachine.Responses;
+using System.Numerics;
 
 namespace SlotMachine.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class PlayerController : Controller
     {
         private readonly IMongoCollection<Player> _players;

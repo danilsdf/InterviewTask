@@ -22,9 +22,33 @@ public static class SlotMachineExtensions
 
     public static int CalculateWinAmount(this Configuration configuration, int[,] matrix, int bet)
     {
-        var win = 0;
+        var win = CalculateWinSum(configuration.LinesToWin, matrix, bet);
 
-        foreach (var winLine in configuration.LinesToWin)
+        return win * bet;
+    }
+
+    public static int CalculateWinAmountParallel(this Configuration configuration, int[,] matrix, int bet, int taskCount)
+    {
+        var tasks = new Task[taskCount];
+        var results = new int[taskCount];
+        var portionSize = configuration.LinesToWin.Count / taskCount;
+
+        for (var i = 0; i < taskCount; i++)
+        {
+            var i1 = i;
+            tasks[i] = Task.Run(() => results[i1] = CalculateWinSum(configuration.LinesToWin.Skip(i1 * portionSize).Take(portionSize).ToList(), matrix, bet));
+        }
+
+        Task.WaitAll(tasks);
+
+        return results.Sum() * bet;
+    }
+
+    private static int CalculateWinSum(List<List<(int,int)>> linesToWin, int[,] matrix, int bet)
+    {
+        var sum = 0;
+
+        foreach (var winLine in linesToWin)
         {
             if (matrix[winLine[0].Item1, winLine[0].Item2] != matrix[winLine[1].Item1, winLine[1].Item2])
             {
@@ -42,9 +66,9 @@ public static class SlotMachineExtensions
                 count++;
             }
 
-            win += matrix[winLine[0].Item1, winLine[0].Item2] * count;
+            sum += matrix[winLine[0].Item1, winLine[0].Item2] * count;
         }
 
-        return win * bet;
+        return sum;
     }
 }

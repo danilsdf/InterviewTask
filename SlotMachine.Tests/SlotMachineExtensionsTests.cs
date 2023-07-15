@@ -1,4 +1,5 @@
-﻿using SlotMachine.Entities;
+﻿using System.Diagnostics;
+using SlotMachine.Entities;
 using SlotMachine.Extensions;
 
 namespace SlotMachine.Tests;
@@ -94,7 +95,7 @@ public class SlotMachineExtensionsTests
     }
 
     [Fact]
-    public void CalculateTotalWin_Returns27400()
+    public void CalculateTotalWin_ReturnsCorrect()
     {
         var resultMatrix = new[,]
         {
@@ -109,5 +110,28 @@ public class SlotMachineExtensionsTests
         var result = configuration.CalculateWinAmount(resultMatrix, bet); // 1+1+1+1+1 + 2+2+2 + 1+1
 
         Assert.Equal(13, result);
+    }
+
+    [Fact]
+    public void CalculateTotalWin_CheckAlgorithms()
+    {
+        var stopWatch = new Stopwatch();
+
+        var configuration = new Configuration(50, 30);
+        var resultMatrix = configuration.GenerateRandomMatrix();
+
+        var bet = 1;
+
+        stopWatch.Start();
+        var result1 = configuration.CalculateWinAmount(resultMatrix, bet);
+        stopWatch.Stop();
+        var time1 = stopWatch.Elapsed;
+
+        stopWatch.Restart();
+        var result2 = configuration.CalculateWinAmountParallel(resultMatrix, bet, 5);
+        stopWatch.Stop();
+        var time2 = stopWatch.Elapsed;
+
+        Assert.True(time2 < time1);
     }
 }

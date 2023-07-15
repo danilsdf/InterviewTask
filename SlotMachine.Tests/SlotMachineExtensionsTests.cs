@@ -24,7 +24,7 @@ public class SlotMachineExtensionsTests
         };
 
         // Act
-        var actualWinLines = SlotMachineExtensions.GenerateWinLines(3, 3);
+        var actualWinLines = new Configuration(3, 3).LinesToWin;
         // Assert
         Assert.Equal(expectedWinLines.Count, actualWinLines.Count);
 
@@ -61,7 +61,7 @@ public class SlotMachineExtensionsTests
         };
 
         // Act
-        var actualWinLines = SlotMachineExtensions.GenerateWinLines(5, 3);
+        var actualWinLines = new Configuration(5, 3).LinesToWin;
         // Assert
         Assert.Equal(expectedWinLines.Count, actualWinLines.Count);
 

@@ -20,6 +20,16 @@ namespace SlotMachine.Controllers
         [HttpPost]
         public async Task<ActionResult<SpinResult>> AddConfiguration(ConfigurationModel model)
         {
+            if (model.Height <= 0 || model.Width < 0)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            if (model.Height > model.Width)
+            {
+                return BadRequest("Width must be more or equal than height");
+            }
+
             var config = _configuration.Find(_ => true).FirstOrDefault();
             if (config != null)
             {
@@ -36,10 +46,25 @@ namespace SlotMachine.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateConfiguration(ConfigurationModel model)
         {
+            if (model.Height <= 0 || model.Width < 0)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            if (model.Height > model.Width)
+            {
+                return BadRequest("Width must be more or equal than height");
+            }
+
             var config = _configuration.Find(_ => true).FirstOrDefault();
             if (config == null)
             {
                 return NotFound("Slot machine not configured yet");
+            }
+
+            if (model.Height == config.Height && model.Width == config.Width)
+            {
+                return Ok();
             }
 
             var configuration = new Configuration(model.Width, model.Height)

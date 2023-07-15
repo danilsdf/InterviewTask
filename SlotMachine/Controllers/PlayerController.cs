@@ -41,7 +41,7 @@ namespace SlotMachine.Controllers
             player.Balance -= model.Bet;
 
             var result = config.GenerateRandomMatrix();
-            var totalWin = 0; // todo calculate win amount
+            var totalWin = config.CalculateWinAmount(result, model.Bet);
 
             player.Balance += totalWin;
             await _players.ReplaceOneAsync(p => p.Id == player.Id, player);

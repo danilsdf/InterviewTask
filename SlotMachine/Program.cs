@@ -3,7 +3,6 @@ using SlotMachine.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddCustomMongoDb(builder.Configuration);
 
 builder.Services.AddControllers();

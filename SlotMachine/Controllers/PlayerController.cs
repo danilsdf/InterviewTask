@@ -22,8 +22,21 @@ namespace SlotMachine.Controllers
         public async Task<ActionResult<SpinResult>> Spin(SpinModel model)
         {
             var player = _players.Find(p => p.UserName == model.UserName).FirstOrDefault();
+            if (player == null)
+            {
+                return NotFound("Player not found");
+            }
+
+            if (player.Balance < model.Bet)
+            {
+                return BadRequest("Insufficient balance");
+            }
 
             var config = _configuration.Find(_ => true).FirstOrDefault();
+            if (config == null)
+            {
+                return NotFound("Slot machine not configured yet");
+            }
 
             player.Balance -= model.Bet;
 
@@ -42,6 +55,15 @@ namespace SlotMachine.Controllers
         public async Task<ActionResult> UpdateBalance(BalanceModel model)
         {
             var player = _players.Find(p => p.UserName == model.UserName).FirstOrDefault();
+            if (player == null)
+            {
+                return NotFound("Player not found.");
+            }
+
+            if (model.Amount < 0)
+            {
+                return BadRequest("Negative amount");
+            }
 
             //The amount will be added to the player balance and committed to DB
             player.Balance += model.Amount;
